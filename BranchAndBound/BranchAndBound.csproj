@@ -49,5 +49,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TecGames.Core\TecGames.Core.csproj">
+      <Project>{daeb96a2-9772-4e3d-a858-763975f707b6}</Project>
+      <Name>TecGames.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
