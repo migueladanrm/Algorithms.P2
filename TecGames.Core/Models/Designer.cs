@@ -39,21 +39,33 @@ namespace TecGames.Models
         /// <summary>
         /// Horario de trabajo diurno.
         /// </summary>
-        public WorkSchedule DayShift => dayShift;
+        public WorkSchedule DayShift {
+            get => dayShift;
+            set => dayShift = value;
+        }
 
         /// <summary>
         /// Horario de trabajo nocturno.
         /// </summary>
-        public WorkSchedule NightShift => nightShift;
+        public WorkSchedule NightShift {
+            get => nightShift;
+            set => nightShift = value;
+        }
 
         /// <summary>
         /// Secciones de trabajo.
         /// </summary>
-        public List<WorkSection> WorkSections => workSections;
+        public List<WorkSection> WorkSections {
+            get => workSections;
+            set => workSections = value;
+        }
 
         /// <summary>
         /// Precios por sección de trabajo.
         /// </summary>
-        public Dictionary<WorkSection, decimal> Prices => prices;
+        public Dictionary<WorkSection, decimal> Prices {
+            get => prices;
+            set => prices = value;
+        }
     }
 }
