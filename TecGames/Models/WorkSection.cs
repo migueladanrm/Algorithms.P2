@@ -37,5 +37,10 @@ namespace TecGames.Models
         /// Horario de la sección de trabajo.
         /// </summary>
         public WorkSchedule Schedule => schedule;
+
+        public override string ToString()
+        {
+            return $"{schedule.ToString()}";
+        }
     }
 }

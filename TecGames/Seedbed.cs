@@ -44,17 +44,62 @@ public static class Seedbed
 
     #endregion
 
-    public static List<Designer> GenerateRandomDesigners(int count)
+    public static List<Designer> GenerateRandomDesigners(int n)
     {
         LoadMokupData();
 
         var data = new List<Designer>();
 
-        for (int i = 0; i < count; i++)
-            data.Add(new Designer(i + 1, $"{mkFirstName[random.Next(0, mkFirstName.Count - 1)]} {mkLastName[random.Next(0, mkLastName.Count - 1)]}", GetRandomWorkSchedule(false), GetRandomWorkSchedule(true), null, null));
+        int i = 1;
+        while (data.Count < n) {
+            var tmp = new Designer(i, $"{mkFirstName[random.Next(0, mkFirstName.Count - 1)]} {mkLastName[random.Next(0, mkLastName.Count - 1)]}", GetRandomWorkSchedule(false), GetRandomWorkSchedule(true), null, null);
+
+            if (!(tmp.DayShift == WorkSchedule.NotAvailable && tmp.NightShift == WorkSchedule.NotAvailable) && (((tmp.DayShift == WorkSchedule.AllDay || tmp.DayShift == WorkSchedule.MidDay) && tmp.NightShift == WorkSchedule.NotAvailable) || ((tmp.NightShift == WorkSchedule.AllNight || tmp.NightShift == WorkSchedule.MidNight) && tmp.DayShift == WorkSchedule.NotAvailable)))
+                data.Add(tmp);
+
+            i++;
+        }
 
         return data;
     }
+
+    public static List<Job> GenerateRandomJobs(int n)
+    {
+        var jobs = new List<Job>();
+
+        int i = 1;
+        while (jobs.Count <= n) {
+            jobs.Add(new Job(i, $"Trabajo {i}"));
+            i++;
+        }
+
+        return jobs;
+    }
+
+    public static List<Location> GenerateRandomLocations(int n)
+    {
+        var locations = new List<Location>();
+
+        int i = 1;
+        while (locations.Count <= n) {
+            var tmpLocation = new Location(i, $"Ubicación {i}", GetRandomWorkSchedule(false), GetRandomWorkSchedule(true));
+
+            if (!(tmpLocation.DayShift == WorkSchedule.NotAvailable && tmpLocation.NightShift == WorkSchedule.NotAvailable))
+                locations.Add(tmpLocation);
+
+            i++;
+        }
+
+        return locations;
+    }
+
+    public static List<WorkSection> GenerateWorkSections() => new List<WorkSection>() {
+        new WorkSection(1, "7:00 AM - 4:00 PM"  ,random.Next(100,500), WorkSchedule.AllDay),
+        new WorkSection(2, "7:00 AM - 11:00 AM" ,random.Next(100,500), WorkSchedule.MidDay),
+        new WorkSection(3, "7:00 PM - 4:00 AM"  ,random.Next(100,500), WorkSchedule.AllNight),
+        new WorkSection(4, "7:00 PM - 11:00 PM" ,random.Next(100,500), WorkSchedule.MidNight),
+    };
+
 
     /// <summary>
     /// Obtiene un turno de trabajo aleatorio.

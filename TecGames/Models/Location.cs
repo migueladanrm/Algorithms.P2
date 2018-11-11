@@ -5,7 +5,7 @@ namespace TecGames.Models
     /// <summary>
     /// Ubicación de trabajo.
     /// </summary>
-    public class Location : IdentityBasis,IWorkShifts
+    public class Location : IdentityBasis, IWorkShifts
     {
         private WorkSchedule dayShift;
         private WorkSchedule nightShift;
@@ -38,5 +38,11 @@ namespace TecGames.Models
         /// </summary>
         public WorkSchedule NightShift => nightShift;
 
+        public override string ToString()
+        {
+            //return $"{Utils.FillStringWithSpaces(id.ToString(), 4)} | {Utils.FillStringWithSpaces(name, 20)} | HD: {Utils.FillStringWithSpaces(dayShift.ToString(),12)} | HN: {Utils.FillStringWithSpaces(nightShift.ToString(), 12)}";
+
+            return $"{id} | {name} | HD: {dayShift.ToString()} | HN: {nightShift.ToString()}";
+        }
     }
 }

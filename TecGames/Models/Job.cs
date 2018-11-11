@@ -16,6 +16,16 @@ namespace TecGames.Models
         /// </summary>
         /// <param name="id">Identificador del elemento.</param>
         /// <param name="name">Nombre o descripción del elemento.</param>
+        public Job(int id, string name) : base(id, name)
+        {
+
+        }
+
+        /// <summary>
+        /// Inicializa una instancia de <see cref="Job"/>.
+        /// </summary>
+        /// <param name="id">Identificador del elemento.</param>
+        /// <param name="name">Nombre o descripción del elemento.</param>
         /// <param name="designers">Lista de diseñadores asignados a la tarea.</param>
         /// <param name="location">Ubicación.</param>
         /// <param name="workSection">Sección de trabajo.</param>
@@ -49,6 +59,11 @@ namespace TecGames.Models
         {
             if (!designers.Contains(designer))
                 designers.Add(designer);
+        }
+
+        public override string ToString()
+        {
+            return $"{id} | {name}\n\t- W: {workSection.ToString()}\n\t- L: {location.ToString()}";
         }
     }
 }
