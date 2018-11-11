@@ -29,17 +29,17 @@ namespace TecGames.Models
         /// <summary>
         /// Lista de diseñadores asignados a este trabajo.
         /// </summary>
-        public List<Designer> Designers => designers;
+        public List<Designer> Designers { get => designers; set => designers = value; }
 
         /// <summary>
         /// Ubicación.
         /// </summary>
-        public Location Location => location;
+        public Location Location { get => location; set => location = value; }
 
         /// <summary>
         /// Sección de trabajo.
         /// </summary>
-        public WorkSection WorkSection => workSection;
+        public WorkSection WorkSection { get => workSection; set => workSection = value; }
 
         /// <summary>
         /// Agrega un diseñador a la lista existente.

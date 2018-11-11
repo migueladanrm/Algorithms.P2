@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static System.Console;
 using TecGames.Models;
-using System.IO;
-using Newtonsoft.Json.Linq;
+using static System.Console;
 
-namespace Genetic
+namespace TecGames
 {
     class Program
     {
+
         private static List<Job> jobs;
         private static List<Location> locations;
         private static List<WorkSection> workSections;
@@ -20,8 +19,6 @@ namespace Genetic
 
         static void Main(string[] args)
         {
-            WriteLine("Hola, mundo!\n");
-
             var designers = Seedbed.GenerateRandomDesigners(1000);
 
             foreach (var designer in designers)
@@ -29,6 +26,5 @@ namespace Genetic
 
             ReadKey();
         }
-
     }
 }
