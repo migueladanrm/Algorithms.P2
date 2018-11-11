@@ -29,6 +29,7 @@ namespace TecGames
             workSections = Seedbed.GenerateWorkSections();
             designers = Seedbed.GenerateRandomDesigners(totalDesigners);
 
+            RunDesignerDefaultBindings();
             RunJobDefaultBindings();
         }
 
@@ -37,6 +38,19 @@ namespace TecGames
         public List<WorkSection> WorkSections => workSections;
         public List<Designer> Designers => designers;
 
+        private WorkSection GetWorkSectionBySchedule(WorkSchedule schedule)
+        {
+            if (workSections != null && schedule != WorkSchedule.NotAvailable)
+                return workSections.Where(ws => ws.Schedule == schedule).First();
+
+            return null;
+        }
+
+        private void RunDesignerDefaultBindings()
+        {
+            foreach(var designer in designers)
+                designer.WorkSection = designer.DayShift != WorkSchedule.NotAvailable ? GetWorkSectionBySchedule(designer.DayShift) : GetWorkSectionBySchedule(designer.NightShift);
+        }
 
         private void RunJobDefaultBindings()
         {

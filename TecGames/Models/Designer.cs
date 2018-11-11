@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace TecGames.Models
 {
@@ -8,6 +7,8 @@ namespace TecGames.Models
     /// </summary>
     public class Designer : IdentityBasis, IWorkShifts
     {
+        private static Random random = new Random(DateTime.Now.Millisecond);
+
         private WorkSchedule dayShift;
         private WorkSchedule nightShift;
         private decimal price;
@@ -20,8 +21,8 @@ namespace TecGames.Models
         /// <param name="name">Nombre.</param>
         /// <param name="dayShift">Turno de trabajo de día.</param>
         /// <param name="nightShift">Turno de trbajo de noche.</param>
-        /// <param name="workSection">Secciones de trabajo.</param>
-        /// <param name="price">Precio por secciones de trabajo.</param>
+        /// <param name="workSection">Sección de trabajo.</param>
+        /// <param name="price">Precio por sección de trabajo.</param>
         public Designer(int id, string name, WorkSchedule dayShift, WorkSchedule nightShift, WorkSection workSection, decimal price) : base(id, name)
         {
             if (dayShift == WorkSchedule.NotAvailable || dayShift == WorkSchedule.AllDay || dayShift == WorkSchedule.MidDay)
@@ -55,9 +56,12 @@ namespace TecGames.Models
         /// <summary>
         /// Secciones de trabajo.
         /// </summary>
-        public WorkSection WorkSections {
+        public WorkSection WorkSection {
             get => workSection;
-            set => workSection = value;
+            set {
+                price = random.Next((int)value.Price, (int)(value.Price + 25));
+                workSection = value;
+            }
         }
 
         /// <summary>
@@ -70,7 +74,7 @@ namespace TecGames.Models
 
         public override string ToString()
         {
-            return $"{Utils.FillStringWithSpaces(id.ToString(), 4)} | {Utils.FillStringWithSpaces(name, 20)} | HD: {Utils.FillStringWithSpaces(dayShift.ToString(),12)} | HN: {Utils.FillStringWithSpaces(nightShift.ToString(), 12)}";
+            return $"{Utils.FillStringWithSpaces(id.ToString(), 4)} | {Utils.FillStringWithSpaces(name, 20)} | HD: {Utils.FillStringWithSpaces(dayShift.ToString(), 12)} | HN: {Utils.FillStringWithSpaces(nightShift.ToString(), 12)} | P: {price}";
         }
     }
 }

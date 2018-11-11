@@ -17,8 +17,8 @@ namespace TecGames
 
             var workspace = new Workspace(n);
 
-            foreach (var job in workspace.Jobs)
-                WriteLine(job.ToString());
+            foreach (var designer in workspace.Designers)
+                WriteLine(designer.ToString());
 
             ReadKey();
         }
