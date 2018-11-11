@@ -52,7 +52,7 @@ public static class Seedbed
 
         int i = 1;
         while (data.Count < n) {
-            var tmp = new Designer(i, $"{mkFirstName[random.Next(0, mkFirstName.Count - 1)]} {mkLastName[random.Next(0, mkLastName.Count - 1)]}", GetRandomWorkSchedule(false), GetRandomWorkSchedule(true), null, null);
+            var tmp = new Designer(i, $"{mkFirstName[random.Next(0, mkFirstName.Count - 1)]} {mkLastName[random.Next(0, mkLastName.Count - 1)]}", GetRandomWorkSchedule(false), GetRandomWorkSchedule(true), null, 0);
 
             if (!(tmp.DayShift == WorkSchedule.NotAvailable && tmp.NightShift == WorkSchedule.NotAvailable) && (((tmp.DayShift == WorkSchedule.AllDay || tmp.DayShift == WorkSchedule.MidDay) && tmp.NightShift == WorkSchedule.NotAvailable) || ((tmp.NightShift == WorkSchedule.AllNight || tmp.NightShift == WorkSchedule.MidNight) && tmp.DayShift == WorkSchedule.NotAvailable)))
                 data.Add(tmp);
