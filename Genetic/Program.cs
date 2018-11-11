@@ -17,45 +17,18 @@ namespace Genetic
         private static List<WorkSection> workSections;
         private static List<Designer> designers;
 
-        private static List<string> mokupFirstName;
-        private static List<string> mokupLastName;
 
         static void Main(string[] args)
         {
-            WriteLine("Hola, mundo!");
+            WriteLine("Hola, mundo!\n");
 
-            LoadMokupData();
+            var designers = Seedbed.GenerateRandomDesigners(1000);
 
-
-            var random = new Random(DateTime.Now.Millisecond);
-
-            for (int i = 0; i < 10; i++) {
-                WriteLine($"{mokupFirstName[random.Next(0,mokupFirstName.Count-1)]} {mokupLastName[random.Next(0, mokupLastName.Count - 1)]}");
-            }
+            foreach (var designer in designers)
+                WriteLine(designer.ToString());
 
             ReadKey();
         }
-
-        private static void LoadMokupData()
-        {
-            mokupFirstName = new List<string>();
-            mokupLastName = new List<string>();
-
-            var tmp = File.ReadAllText("persons.json", Encoding.UTF8);
-            var json = JObject.Parse(tmp);
-
-            foreach (string firstname in (JArray)json["firstname"])
-                mokupFirstName.Add(firstname);
-
-            foreach (string lastname in (JArray)json["lastname"])
-                mokupLastName.Add(lastname);
-
-        }
-
-        private static void GenerateRandomData()
-        {
-        }
-
 
     }
 }

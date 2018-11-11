@@ -67,5 +67,10 @@ namespace TecGames.Models
             get => prices;
             set => prices = value;
         }
+
+        public override string ToString()
+        {
+            return $"{Utils.FillStringWithSpaces(id.ToString(), 4)} | {Utils.FillStringWithSpaces(name, 20)} | HD: {Utils.FillStringWithSpaces(dayShift.ToString(),12)} | HN: {Utils.FillStringWithSpaces(nightShift.ToString(), 12)}";
+        }
     }
 }
