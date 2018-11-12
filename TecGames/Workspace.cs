@@ -155,7 +155,7 @@ namespace TecGames
 
             var designerParent = designerParents[random.Next(0, 2)];
 
-            foreach(var designer in job.Designers) {
+            foreach (var designer in job.Designers) {
 
             }
 
@@ -170,7 +170,18 @@ namespace TecGames
 
         #region Ramificación y poda
 
+        private void Bb()
+        {
+            var ws = GetRandomWorkSection();
+            var designersBySchedule = GetDesignersByWorkSchedule(ws.Schedule);
 
+            var job = new Job(jobsId, $"Trabajo {jobsId}", ws, GetRandomLocationByWorkSchedule(ws.Schedule),
+                new List<Designer>() { designersBySchedule[random.Next(0, designersBySchedule.Count)] });
+
+            for (int i = 0; i < designersBySchedule.Count; i++) {
+
+            }
+        }
 
         #endregion
     }
