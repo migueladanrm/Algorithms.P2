@@ -29,11 +29,11 @@ namespace TecGames.Models
         /// <param name="designers">Lista de diseñadores asignados a la tarea.</param>
         /// <param name="location">Ubicación.</param>
         /// <param name="workSection">Sección de trabajo.</param>
-        public Job(int id, string name, List<Designer> designers, Location location, WorkSection workSection) : base(id, name)
+        public Job(int id, string name, WorkSection workSection, Location location, List<Designer> designers) : base(id, name)
         {
-            this.designers = designers != null ? designers : new List<Designer>();
-            this.location = location;
             this.workSection = workSection;
+            this.location = location;
+            this.designers = designers != null ? designers : new List<Designer>();
         }
 
         /// <summary>
