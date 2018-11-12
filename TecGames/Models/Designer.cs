@@ -11,7 +11,7 @@ namespace TecGames.Models
 
         private WorkSchedule dayShift;
         private WorkSchedule nightShift;
-        private double price;
+        private int price;
         private WorkSection workSection;
 
         /// <summary>
@@ -23,7 +23,7 @@ namespace TecGames.Models
         /// <param name="nightShift">Turno de trbajo de noche.</param>
         /// <param name="workSection">Sección de trabajo.</param>
         /// <param name="price">Precio por sección de trabajo.</param>
-        public Designer(int id, string name, WorkSchedule dayShift, WorkSchedule nightShift, WorkSection workSection, double price) : base(id, name)
+        public Designer(int id, string name, WorkSchedule dayShift, WorkSchedule nightShift, WorkSection workSection, int price) : base(id, name)
         {
             if (dayShift == WorkSchedule.NotAvailable || dayShift == WorkSchedule.AllDay || dayShift == WorkSchedule.MidDay)
                 this.dayShift = dayShift;
@@ -59,7 +59,7 @@ namespace TecGames.Models
         public WorkSection WorkSection {
             get => workSection;
             set {
-                price = random.Next((int)value.Price, (int)(value.Price + 25));
+                price = random.Next(value.Price, value.Price + 25);
                 workSection = value;
             }
         }
@@ -67,7 +67,7 @@ namespace TecGames.Models
         /// <summary>
         /// Precios por sección de trabajo.
         /// </summary>
-        public double Price {
+        public int Price {
             get => price;
             set => price = value;
         }

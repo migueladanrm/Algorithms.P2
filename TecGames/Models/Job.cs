@@ -63,11 +63,7 @@ namespace TecGames.Models
 
         public override string ToString()
         {
-            string str= $"{id} | {name}\n\t- W: {workSection.ToString()}\n\t- L: {location.ToString()}\n\t- D:\n";
-            foreach (var d in designers)
-                str += $"\t\t{d.ToString()}\n";
-            
-            return str;
+            return $"{id} | {name}\n\t- W: {workSection.ToString()}\n\t- L: {location.ToString()}";
         }
     }
 }
