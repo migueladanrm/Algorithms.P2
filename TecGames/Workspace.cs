@@ -174,12 +174,25 @@ namespace TecGames
         {
             var ws = GetRandomWorkSection();
             var designersBySchedule = GetDesignersByWorkSchedule(ws.Schedule);
+            Designer rootDesigner = designersBySchedule[ random.Next(0, designersBySchedule.Count)];
 
             var job = new Job(jobsId, $"Trabajo {jobsId}", ws, GetRandomLocationByWorkSchedule(ws.Schedule),
-                new List<Designer>() { designersBySchedule[random.Next(0, designersBySchedule.Count)] });
+                new List<Designer>() { rootDesigner });
+
+            int index = 0;
 
             for (int i = 0; i < designersBySchedule.Count; i++) {
-
+                if (designersBySchedule[i].Price <= rootDesigner.Price)
+                {
+                    while(job.Designers[index]!=null)
+                    {
+                        if (job.Designers[index].Price <= rootDesigner.Price)
+                        {
+                            index++;
+                            job.Designers[index] = designersBySchedule[i];
+                        }
+                    }
+                } 
             }
         }
 
