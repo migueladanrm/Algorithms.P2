@@ -24,6 +24,8 @@ namespace TecGames
             foreach (var designer in workspace.Designers)
                 WriteLine(designer.ToString());
 
+            
+
             ReadKey();
         }
     }
