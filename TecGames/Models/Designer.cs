@@ -11,7 +11,7 @@ namespace TecGames.Models
 
         private WorkSchedule dayShift;
         private WorkSchedule nightShift;
-        private int price;
+        private double price;
         private WorkSection workSection;
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace TecGames.Models
         public WorkSection WorkSection {
             get => workSection;
             set {
-                price = random.Next(value.Price, value.Price + 25);
+                price = random.Next((int)value.Price, (int)(value.Price + 25));
                 workSection = value;
             }
         }
@@ -67,7 +67,7 @@ namespace TecGames.Models
         /// <summary>
         /// Precios por sección de trabajo.
         /// </summary>
-        public int Price {
+        public double Price {
             get => price;
             set => price = value;
         }

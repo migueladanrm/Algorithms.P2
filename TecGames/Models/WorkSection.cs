@@ -7,7 +7,7 @@ namespace TecGames.Models
     /// </summary>
     public class WorkSection : IdentityBasis
     {
-        private int price;
+        private double price;
         private WorkSchedule schedule;
 
         /// <summary>
@@ -17,7 +17,7 @@ namespace TecGames.Models
         /// <param name="name">Nombre o descripción.</param>
         /// <param name="price">Precio de la sección de trabajo.</param>
         /// <param name="schedule">Horario de la sección de trabajo.</param>
-        public WorkSection(int id, string name, int price, WorkSchedule schedule) : base(id, name)
+        public WorkSection(int id, string name, double price, WorkSchedule schedule) : base(id, name)
         {
             if (0 < price)
                 this.price = price;
@@ -31,7 +31,7 @@ namespace TecGames.Models
         /// <summary>
         /// Precio de la sección de trabajo.
         /// </summary>
-        public int Price => price;
+        public double Price { get => price; set => price = value; }
 
         /// <summary>
         /// Horario de la sección de trabajo.

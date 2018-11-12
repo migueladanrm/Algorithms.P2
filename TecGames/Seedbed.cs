@@ -52,7 +52,8 @@ public static class Seedbed
         while (data.Count < n) {
             var tmp = new Designer(i, $"{mkFirstName[random.Next(0, mkFirstName.Count - 1)]} {mkLastName[random.Next(0, mkLastName.Count - 1)]}", GetRandomWorkSchedule(false), GetRandomWorkSchedule(true), null, 0);
 
-            if (!(tmp.DayShift == WorkSchedule.NotAvailable && tmp.NightShift == WorkSchedule.NotAvailable) && (((tmp.DayShift == WorkSchedule.AllDay || tmp.DayShift == WorkSchedule.MidDay) && tmp.NightShift == WorkSchedule.NotAvailable) || ((tmp.NightShift == WorkSchedule.AllNight || tmp.NightShift == WorkSchedule.MidNight) && tmp.DayShift == WorkSchedule.NotAvailable)))
+            //if (!(tmp.DayShift == WorkSchedule.NotAvailable && tmp.NightShift == WorkSchedule.NotAvailable) && (((tmp.DayShift == WorkSchedule.AllDay || tmp.DayShift == WorkSchedule.MidDay) && tmp.NightShift == WorkSchedule.NotAvailable) || ((tmp.NightShift == WorkSchedule.AllNight || tmp.NightShift == WorkSchedule.MidNight) && tmp.DayShift == WorkSchedule.NotAvailable)))
+            if (tmp.DayShift != WorkSchedule.NotAvailable || tmp.NightShift != WorkSchedule.NotAvailable)
                 data.Add(tmp);
 
             i++;
@@ -92,10 +93,10 @@ public static class Seedbed
     }
 
     public static List<WorkSection> GenerateWorkSections() => new List<WorkSection>() {
-        new WorkSection(1, "7:00 AM - 4:00 PM"  ,random.Next(100,500), WorkSchedule.AllDay),
-        new WorkSection(2, "7:00 AM - 11:00 AM" ,random.Next(100,500), WorkSchedule.MidDay),
-        new WorkSection(3, "7:00 PM - 4:00 AM"  ,random.Next(100,500), WorkSchedule.AllNight),
-        new WorkSection(4, "7:00 PM - 11:00 PM" ,random.Next(100,500), WorkSchedule.MidNight),
+        new WorkSection(1, "7:00 AM - 4:00 PM"  ,random.Next(250, 500), WorkSchedule.AllDay),
+        new WorkSection(2, "7:00 AM - 11:00 AM" ,random.Next(100, 250), WorkSchedule.MidDay),
+        new WorkSection(3, "7:00 PM - 4:00 AM"  ,random.Next(250, 500), WorkSchedule.AllNight),
+        new WorkSection(4, "7:00 PM - 11:00 PM" ,random.Next(100, 250), WorkSchedule.MidNight),
     };
 
 
