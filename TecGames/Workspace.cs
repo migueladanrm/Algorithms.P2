@@ -289,8 +289,6 @@ namespace TecGames
                     measurementsGnAssignments++;
                 }
 
-                //Console.WriteLine($"Generación {i}: {jobs.Select(j => j.Designers.Select(d => d.Price).Sum()).Sum()}");
-
                 fitness = 0;
                 gnCurrentGeneration++;
                 measurementsGnAssignments++;
@@ -442,7 +440,7 @@ namespace TecGames
         /// </summary>
         /// <param name="j">Trabajo.</param>
         /// <returns>Precio del trabajo.</returns>
-        public double BbGetJobPrice(Job j)
+        private double BbGetJobPrice(Job j)
         {
             return j.Designers.Select(d => d.Price).Sum();
         }

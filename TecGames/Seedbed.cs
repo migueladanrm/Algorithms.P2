@@ -20,6 +20,9 @@ public static class Seedbed
 
     private static Random random = new Random(DateTime.Now.Millisecond);
 
+    /// <summary>
+    /// Carga datos de pruebas.
+    /// </summary>
     private static void LoadMokupData()
     {
         if (isLoaded)
@@ -42,6 +45,11 @@ public static class Seedbed
 
     #endregion
 
+    /// <summary>
+    /// Genera diseñadores aleatorios.
+    /// </summary>
+    /// <param name="n">Cantidad de registros.</param>
+    /// <returns>Lista de diseñadores.</returns>
     public static List<Designer> GenerateRandomDesigners(int n)
     {
         LoadMokupData();
@@ -62,6 +70,11 @@ public static class Seedbed
         return data;
     }
 
+    /// <summary>
+    /// Genera trabajos aleatorios.
+    /// </summary>
+    /// <param name="n">Cantidad de registros.</param>
+    /// <returns>Lista de trabajos.</returns>
     public static List<Job> GenerateRandomJobs(int n)
     {
         var jobs = new List<Job>();
@@ -75,6 +88,11 @@ public static class Seedbed
         return jobs;
     }
 
+    /// <summary>
+    /// Genera ubicaciones aleatorias.
+    /// </summary>
+    /// <param name="n">Cantidad de registros.</param>
+    /// <returns>Lista de ubicaciones.</returns>
     public static List<Location> GenerateRandomLocations(int n)
     {
         var locations = new List<Location>();
@@ -92,6 +110,10 @@ public static class Seedbed
         return locations;
     }
 
+    /// <summary>
+    /// Genera las secciones de trabajo.
+    /// </summary>
+    /// <returns>Lista de secciones de trabajo.</returns>
     public static List<WorkSection> GenerateWorkSections() => new List<WorkSection>() {
         new WorkSection(1, "7:00 AM - 4:00 PM"  ,random.Next(250, 500), WorkSchedule.AllDay),
         new WorkSection(2, "7:00 AM - 11:00 AM" ,random.Next(100, 250), WorkSchedule.MidDay),
