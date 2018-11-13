@@ -15,15 +15,15 @@ namespace TecGames
 
         static void Main(string[] args)
         {
-            int n = 30;
+            int n = 1000;
 
-            workspace = new Workspace(n, n, n);
+            workspace = new Workspace(n);
 
-            PrintJobs();
+            //PrintJobs();
 
-            workspace.GnEvolve(1000);
+            workspace.GnEvolve(25);
 
-            PrintJobs();
+            //PrintJobs();
 
             ReadKey();
         }
@@ -42,7 +42,7 @@ namespace TecGames
         {
             AuxWriteTitle("TRABAJOS");
 
-            foreach (var job in workspace.Jobs.Take(5))
+            foreach (var job in workspace.Jobs.Take(1))
                 WriteLine(job.ToString());
 
             WriteLine($"Precio total: {workspace.Jobs.Select(j => j.Designers.Select(d => d.Price).Sum()).Sum()}");

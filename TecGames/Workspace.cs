@@ -5,9 +5,11 @@ using TecGames.Models;
 
 namespace TecGames
 {
+    /// <summary>
+    /// Espacio de trabajo.
+    /// </summary>
     public class Workspace
     {
-
         private List<Job> jobs;
         private List<Location> locations;
         private List<WorkSection> workSections;
@@ -16,8 +18,11 @@ namespace TecGames
         private Random rnd = new Random(DateTime.Now.Millisecond);
 
         private static int jobsId = 1;
+
+        // cantidad de diseñadores por trabajo.
         private static int designersPerJob = 4;
 
+        // generación actual.
         private static int gnCurrentGeneration = 0;
 
         // Mediciones
@@ -26,44 +31,56 @@ namespace TecGames
         public static int measurementsBbAssignments = 0;
         public static int measurementsBbComparisons = 0;
 
-        public Workspace()
+        /// <summary>
+        /// Inicializa un espacio de trabajo.
+        /// </summary>
+        /// <param name="n">Cantidad de objetos.</param>
+        public Workspace(int n)
         {
+            if (n < 10)
+                throw new InvalidOperationException();
 
-        }
-
-        public Workspace(int ndesigners, int nlocations, int njobs)
-        {
             workSections = Seedbed.GenerateWorkSections();
-            jobs = Seedbed.GenerateRandomJobs(njobs);
-            //jobs = new List<Job>();
-            locations = Seedbed.GenerateRandomLocations(nlocations);
-            designers = Seedbed.GenerateRandomDesigners(ndesigners);
+            jobs = Seedbed.GenerateRandomJobs(n);
+            locations = Seedbed.GenerateRandomLocations(n);
+            designers = Seedbed.GenerateRandomDesigners(n);
 
             RunDesignerDefaultBindings();
             RunJobDefaultBindings();
-
-            //GnGenerateDesignerParents();
         }
 
-        public List<Job> Jobs => jobs;
-        public List<Location> Locations => locations;
-        public List<WorkSection> WorkSections => workSections;
+        /// <summary>
+        /// Diseñadores.
+        /// </summary>
         public List<Designer> Designers => designers;
 
-        private WorkSection GetWorkSectionBySchedule(WorkSchedule schedule)
-        {
-            if (workSections != null && schedule != WorkSchedule.NotAvailable)
-                return workSections.Where(ws => ws.Schedule == schedule).First();
+        /// <summary>
+        /// Trabajos.
+        /// </summary>
+        public List<Job> Jobs => jobs;
 
-            return null;
-        }
+        /// <summary>
+        /// Ubicaciones.
+        /// </summary>
+        public List<Location> Locations => locations;
 
+        /// <summary>
+        /// Secciones de trabajo.
+        /// </summary>
+        public List<WorkSection> WorkSections => workSections;
+
+        /// <summary>
+        /// Realiza los enlaces iniciales para los diseñadores.
+        /// </summary>
         private void RunDesignerDefaultBindings()
         {
             foreach (var designer in designers)
                 designer.WorkSection = designer.DayShift != WorkSchedule.NotAvailable ? GetWorkSectionBySchedule(designer.DayShift) : GetWorkSectionBySchedule(designer.NightShift);
         }
 
+        /// <summary>
+        /// Realiza los enlaces iniciales para los trabajos.
+        /// </summary>
         private void RunJobDefaultBindings()
         {
             for (int i = 0; i < jobs.Count; i++) {
@@ -74,6 +91,26 @@ namespace TecGames
             }
         }
 
+        #region Métodos auxiliares
+
+        /// <summary>
+        /// Obtiene una sección de trabajo correspondiente a su horario.
+        /// </summary>
+        /// <param name="schedule">Horario de trabajo.</param>
+        /// <returns>Sección de trabajo.</returns>
+        private WorkSection GetWorkSectionBySchedule(WorkSchedule schedule)
+        {
+            if (workSections != null && schedule != WorkSchedule.NotAvailable)
+                return workSections.Where(ws => ws.Schedule == schedule).First();
+
+            return null;
+        }
+
+        /// <summary>
+        /// Obtiene ubicaciones filtradas por horario de trabajo.
+        /// </summary>
+        /// <param name="schedule">Horario de trabajo.</param>
+        /// <returns>Lista de ubicaciones.</returns>
         private List<Location> GetLocationsByWorkSchedule(WorkSchedule schedule)
         {
             if (schedule == WorkSchedule.NotAvailable)
@@ -99,12 +136,22 @@ namespace TecGames
             return matches;
         }
 
+        /// <summary>
+        /// Obtiene una ubicación aleatoria por horario de trabajo.
+        /// </summary>
+        /// <param name="schedule">Horario de trabajo.</param>
+        /// <returns>Ubicación.</returns>
         private Location GetRandomLocationByWorkSchedule(WorkSchedule schedule)
         {
             var matches = GetLocationsByWorkSchedule(schedule);
-            return matches[rnd.Next(0, matches.Count - 1)];
+            return matches[rnd.Next(0, matches.Count)];
         }
 
+        /// <summary>
+        /// Obtiene diseñadores filtrados por horario de trabajo.
+        /// </summary>
+        /// <param name="schedule">Horario de trabajo.</param>
+        /// <returns>Lista de diseñadores.</returns>
         public List<Designer> GetDesignersByWorkSchedule(WorkSchedule schedule)
         {
             var target = new List<Designer>();
@@ -127,6 +174,12 @@ namespace TecGames
             return target;
         }
 
+        /// <summary>
+        /// Obtiene una lista de diseñadores aleatorios filtrados por horario de trabajo.
+        /// </summary>
+        /// <param name="schedule">Horario de trabajo.</param>
+        /// <param name="n">Cantidad de diseñadores.</param>
+        /// <returns>Lista de diseñadores.</returns>
         public List<Designer> GetRandomDesignersByWorkSchedule(WorkSchedule schedule, int n)
         {
             var randomDesigners = new List<Designer>();
@@ -141,44 +194,60 @@ namespace TecGames
             return randomDesigners;
         }
 
+        /// <summary>
+        /// Obtiene una sección de trabajo aleatoria.
+        /// </summary>
+        /// <returns>Sección de trabajo.</returns>
         private WorkSection GetRandomWorkSection() => workSections[rnd.Next(0, workSections.Count)];
+
+        #endregion
 
         #region Algoritmo genético
 
+        Job[] gnParentJobs;
 
-        Job[] parentJobs;
-
+        /// <summary>
+        /// Ejecuta el proceso de evolución.
+        /// </summary>
+        /// <param name="n">Cantidad de generaciones.</param>
         public void GnEvolve(int n)
         {
-            if (parentJobs == null)
-                parentJobs = GnGetParentJobs();
+            if (gnParentJobs == null)
+                gnParentJobs = jobs.OrderBy(j => rnd.Next()).Take(2).ToList().ToArray();
 
-            parentJobs = GnCrossover(parentJobs[0], parentJobs[1]);
+            gnParentJobs = GnCrossover(gnParentJobs[0], gnParentJobs[1]);
+
             int fitness = 0;
 
             for (int i = 0; i < n; i++) {
                 for (int j = 0; j < jobs.Count; j++) {
                     bool fit = GnEvaluate(jobs[j]);
-                    if (fit)
+                    if (fit) {
                         fitness++;
+                    }
                 }
 
-                double generationFitness = ((jobs.Count / 100) * fitness) / 100;
-
-                if (generationFitness < 50)
+                if (((jobs.Count / 100) * fitness) / 100 < 50)
                     GnMutate();
                 else
-                    parentJobs = GnCrossover(parentJobs[0], parentJobs[1]);
+                    gnParentJobs = GnCrossover(gnParentJobs[0], gnParentJobs[1]);
 
+                Console.WriteLine($"Generación {i}: {jobs.Select(j => j.Designers.Select(d => d.Price).Sum()).Sum()}");
 
                 fitness = 0;
                 gnCurrentGeneration++;
             }
         }
 
+        /// <summary>
+        /// Cruza un par de <see cref="Job"/> (generalmente padres).
+        /// </summary>
+        /// <param name="j1">Instancia 1.</param>
+        /// <param name="j2">Instancia 2.</param>
+        /// <returns>Cruces.</returns>
         private Job[] GnCrossover(Job j1, Job j2)
         {
-            // si tienen la misma sección de trabajo, se mezcla intercambia un diseñador.
+            // Si tienen la misma sección de trabajo, se intercambia un diseñador y se agrega uno aleatorio.
             if (j1.WorkSection == j2.WorkSection) {
                 var j1d = j1.Designers[rnd.Next(0, j1.Designers.Count)];
                 var j2d = j2.Designers[rnd.Next(0, j2.Designers.Count)];
@@ -188,66 +257,73 @@ namespace TecGames
 
                 j1.Designers.Add(j2d);
                 j2.Designers.Add(j1d);
+
+                j1.Designers.RemoveAt(0);
+                j2.Designers.RemoveAt(0);
+
+                var designerCandidatesForJ1 = GetDesignersByWorkSchedule(j1.WorkSection.Schedule);
+                var designerCandidatesForJ2 = GetDesignersByWorkSchedule(j2.WorkSection.Schedule);
+
+                j1.Designers.Add(designerCandidatesForJ1[rnd.Next(0, designerCandidatesForJ1.Count)]);
+                j2.Designers.Add(designerCandidatesForJ2[rnd.Next(0, designerCandidatesForJ2.Count)]);
             } else {
+                // Si la sección de trabajo es distinta, se modifica el trabajo con mayor costo al tipo del de menor costo.
                 var j1p = j1.Designers.Select(d => d.Price).Sum();
                 var j2p = j2.Designers.Select(d => d.Price).Sum();
 
                 if (j1p <= j2p) {
+                    j2.WorkSection = j1.WorkSection;
                     j2.Location = GetRandomLocationByWorkSchedule(j1.WorkSection.Schedule);
                     j2.Designers = GetRandomDesignersByWorkSchedule(j1.WorkSection.Schedule, designersPerJob);
+
+                    j1.Designers[rnd.Next(0, j1.Designers.Count)].Price = rnd.Next((int)Math.Min(j1p, j2p), (int)Math.Max(j1p, j2p)) + Math.Round(rnd.NextDouble());
                 } else {
+                    j1.WorkSection = j2.WorkSection;
                     j1.Location = GetRandomLocationByWorkSchedule(j2.WorkSection.Schedule);
                     j1.Designers = GetRandomDesignersByWorkSchedule(j2.WorkSection.Schedule, designersPerJob);
+
+                    j2.Designers[rnd.Next(0, j2.Designers.Count)].Price = rnd.Next((int)Math.Min(j1p, j2p), (int)Math.Max(j1p, j2p)) + Math.Round(rnd.NextDouble());
                 }
             }
 
             return new Job[2] { j1, j2 };
         }
 
-        private bool IsInTheSameWorkShift(WorkSchedule schedule1, WorkSchedule schedule2)
-        {
-            if (schedule1 == WorkSchedule.NotAvailable || schedule2 == WorkSchedule.NotAvailable)
-                return false;
-
-            if (schedule1 == schedule2)
-                return true;
-
-            if ((schedule1 == WorkSchedule.AllDay && schedule2 == WorkSchedule.MidDay) || (schedule1 == WorkSchedule.MidDay && schedule2 == WorkSchedule.AllDay))
-                return true;
-
-            if ((schedule1 == WorkSchedule.AllNight && schedule2 == WorkSchedule.MidNight) || (schedule1 == WorkSchedule.MidNight && schedule2 == WorkSchedule.AllNight))
-                return true;
-
-
-            return false;
-        }
-
+        /// <summary>
+        /// Evalúa la aptitud de un trabajo.
+        /// </summary>
+        /// <param name="job">Trabajo a evaluar.</param>
+        /// <returns>Aptitud.</returns>
         private bool GnEvaluate(Job job)
         {
             var jp = job.Designers.Select(d => d.Price).Sum();
-            var jpp = parentJobs[rnd.Next(0, 2)].Designers.Select(d => d.Price).Sum();
+            var jpp = gnParentJobs[rnd.Next(0, 2)].Designers.Select(d => d.Price).Sum();
             var diff = jp - jpp;
 
-            if (diff <= jpp * 0.1)
+            if (diff < 0 || diff <= jpp * 0.1)
                 return true;
 
             return false;
         }
 
+        /// <summary>
+        /// Muta todos los trabajos.
+        /// </summary>
         private void GnMutate()
         {
-            jobs.ForEach(j => {
-                if (j != parentJobs[0] && j != parentJobs[1]) {
+            foreach (var j in jobs) {
+                if (j != gnParentJobs[0] && j != gnParentJobs[1]) {
                     j.WorkSection = GetRandomWorkSection();
                     j.Location = GetRandomLocationByWorkSchedule(j.WorkSection.Schedule);
                     j.Designers = GetRandomDesignersByWorkSchedule(j.WorkSection.Schedule, designersPerJob);
-                }
-            });
-        }
 
-        public Job[] GnGetParentJobs()
-        {
-            return jobs.OrderBy(j => rnd.Next()).Take(2).ToList().ToArray();
+                    foreach (var d in j.Designers) {
+                        var pjd = gnParentJobs[rnd.Next(0, 2)].Designers[rnd.Next(0, designersPerJob)];
+                        if (d.Price > pjd.Price)
+                            d.Price = rnd.Next((int)pjd.Price, (int)d.Price) + Math.Round(rnd.NextDouble(), 2);
+                    }
+                }
+            }
         }
 
         #endregion
@@ -258,7 +334,7 @@ namespace TecGames
         {
             var ws = GetRandomWorkSection();
             var designersBySchedule = GetDesignersByWorkSchedule(ws.Schedule);
-            Designer rootDesigner = designersBySchedule[ rnd.Next(0, designersBySchedule.Count)];
+            Designer rootDesigner = designersBySchedule[rnd.Next(0, designersBySchedule.Count)];
 
             var job = new Job(jobsId, $"Trabajo {jobsId}", ws, GetRandomLocationByWorkSchedule(ws.Schedule),
                 new List<Designer>() { rootDesigner });
@@ -266,17 +342,14 @@ namespace TecGames
             int index = 0;
 
             for (int i = 0; i < designersBySchedule.Count; i++) {
-                if (designersBySchedule[i].Price <= rootDesigner.Price)
-                {
-                    while(job.Designers[index]!=null)
-                    {
-                        if (job.Designers[index].Price <= rootDesigner.Price)
-                        {
+                if (designersBySchedule[i].Price <= rootDesigner.Price) {
+                    while (job.Designers[index] != null) {
+                        if (job.Designers[index].Price <= rootDesigner.Price) {
                             index++;
                             job.Designers[index] = designersBySchedule[i];
                         }
                     }
-                } 
+                }
             }
         }
 
