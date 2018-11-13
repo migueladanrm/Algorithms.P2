@@ -59,7 +59,7 @@ namespace TecGames.Models
         public WorkSection WorkSection {
             get => workSection;
             set {
-                price = random.Next((int)value.Price, (int)(value.Price + 25));
+                Price = value.Price + 25 * random.NextDouble();
                 workSection = value;
             }
         }
@@ -69,7 +69,7 @@ namespace TecGames.Models
         /// </summary>
         public double Price {
             get => price;
-            set => price = value;
+            set => price = Math.Round(value, 2);
         }
 
         public override string ToString()

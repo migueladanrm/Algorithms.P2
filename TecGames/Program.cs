@@ -17,10 +17,13 @@ namespace TecGames
         {
             int n = 30;
 
-            workspace = new Workspace(n,n,n);
+            workspace = new Workspace(n, n, n);
 
-            PrintDesigners();
+            PrintJobs();
 
+            workspace.GnEvolve(1000);
+
+            PrintJobs();
 
             ReadKey();
         }
@@ -41,6 +44,8 @@ namespace TecGames
 
             foreach (var job in workspace.Jobs.Take(5))
                 WriteLine(job.ToString());
+
+            WriteLine($"Precio total: {workspace.Jobs.Select(j => j.Designers.Select(d => d.Price).Sum()).Sum()}");
 
             AuxWriteSectionDivider();
         }

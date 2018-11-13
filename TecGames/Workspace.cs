@@ -18,6 +18,13 @@ namespace TecGames
         private static int jobsId = 1;
         private static int designersPerJob = 4;
 
+        private static int gnCurrentGeneration = 0;
+
+        // Mediciones
+        public static int measurementsGnAssignments = 0;
+        public static int measurementsGnComparisons = 0;
+        public static int measurementsBbAssignments = 0;
+        public static int measurementsBbComparisons = 0;
 
         public Workspace()
         {
@@ -97,6 +104,7 @@ namespace TecGames
             var matches = GetLocationsByWorkSchedule(schedule);
             return matches[rnd.Next(0, matches.Count - 1)];
         }
+
         public List<Designer> GetDesignersByWorkSchedule(WorkSchedule schedule)
         {
             var target = new List<Designer>();
@@ -142,27 +150,99 @@ namespace TecGames
 
         public void GnEvolve(int n)
         {
-            parentJobs = GnGetParentJobs();
+            if (parentJobs == null)
+                parentJobs = GnGetParentJobs();
+
+            parentJobs = GnCrossover(parentJobs[0], parentJobs[1]);
+            int fitness = 0;
 
             for (int i = 0; i < n; i++) {
+                for (int j = 0; j < jobs.Count; j++) {
+                    bool fit = GnEvaluate(jobs[j]);
+                    if (fit)
+                        fitness++;
+                }
 
+                double generationFitness = ((jobs.Count / 100) * fitness) / 100;
+
+                if (generationFitness < 50)
+                    GnMutate();
+                else
+                    parentJobs = GnCrossover(parentJobs[0], parentJobs[1]);
+
+
+                fitness = 0;
+                gnCurrentGeneration++;
+            }
+        }
+
+        private Job[] GnCrossover(Job j1, Job j2)
+        {
+            // si tienen la misma sección de trabajo, se mezcla intercambia un diseñador.
+            if (j1.WorkSection == j2.WorkSection) {
+                var j1d = j1.Designers[rnd.Next(0, j1.Designers.Count)];
+                var j2d = j2.Designers[rnd.Next(0, j2.Designers.Count)];
+
+                j1.Designers.RemoveAt(j1.Designers.IndexOf(j1d));
+                j2.Designers.RemoveAt(j2.Designers.IndexOf(j2d));
+
+                j1.Designers.Add(j2d);
+                j2.Designers.Add(j1d);
+            } else {
+                var j1p = j1.Designers.Select(d => d.Price).Sum();
+                var j2p = j2.Designers.Select(d => d.Price).Sum();
+
+                if (j1p <= j2p) {
+                    j2.Location = GetRandomLocationByWorkSchedule(j1.WorkSection.Schedule);
+                    j2.Designers = GetRandomDesignersByWorkSchedule(j1.WorkSection.Schedule, designersPerJob);
+                } else {
+                    j1.Location = GetRandomLocationByWorkSchedule(j2.WorkSection.Schedule);
+                    j1.Designers = GetRandomDesignersByWorkSchedule(j2.WorkSection.Schedule, designersPerJob);
+                }
             }
 
+            return new Job[2] { j1, j2 };
         }
 
-        private void GnCrossover(Job j1, Job j2)
+        private bool IsInTheSameWorkShift(WorkSchedule schedule1, WorkSchedule schedule2)
         {
+            if (schedule1 == WorkSchedule.NotAvailable || schedule2 == WorkSchedule.NotAvailable)
+                return false;
 
+            if (schedule1 == schedule2)
+                return true;
+
+            if ((schedule1 == WorkSchedule.AllDay && schedule2 == WorkSchedule.MidDay) || (schedule1 == WorkSchedule.MidDay && schedule2 == WorkSchedule.AllDay))
+                return true;
+
+            if ((schedule1 == WorkSchedule.AllNight && schedule2 == WorkSchedule.MidNight) || (schedule1 == WorkSchedule.MidNight && schedule2 == WorkSchedule.AllNight))
+                return true;
+
+
+            return false;
         }
 
-        private void GnEvaluate()
+        private bool GnEvaluate(Job job)
         {
+            var jp = job.Designers.Select(d => d.Price).Sum();
+            var jpp = parentJobs[rnd.Next(0, 2)].Designers.Select(d => d.Price).Sum();
+            var diff = jp - jpp;
 
+            if (diff <= jpp * 0.1)
+                return true;
+
+            return false;
         }
 
         private void GnMutate()
         {
-
+            jobs.ForEach(j => {
+                if (j != parentJobs[0] && j != parentJobs[1]) {
+                    j.WorkSection = GetRandomWorkSection();
+                    j.Location = GetRandomLocationByWorkSchedule(j.WorkSection.Schedule);
+                    j.Designers = GetRandomDesignersByWorkSchedule(j.WorkSection.Schedule, designersPerJob);
+                }
+            });
         }
 
         public Job[] GnGetParentJobs()

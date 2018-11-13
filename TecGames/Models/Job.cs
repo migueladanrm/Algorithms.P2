@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace TecGames.Models
 {
@@ -66,7 +67,7 @@ namespace TecGames.Models
             string str = $"{id} | {name}\n\t- W: {workSection.ToString()}\n\t- L: {location.ToString()}\n\t- D:\n";
             foreach (var d in designers)
                 str += $"\t\t{d.ToString()}\n";
-
+            str += $"PT:{designers.Select(d => d.Price).Sum()}\n";
             return str;
         }
     }
